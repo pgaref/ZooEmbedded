@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_40"/>
 	<classpathentry kind="src" output=".eclipse/classes-main" path="src/java/main"/>
 	<classpathentry kind="src" output=".eclipse/classes-main" path="src/java/generated"/>
 	<classpathentry kind="src" output=".eclipse/classes-test" path="src/java/test"/>
