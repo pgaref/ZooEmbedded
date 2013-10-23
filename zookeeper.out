@@ -1,0 +1,31 @@
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/pgaref/workspace/zookeeper-3.4.5/build/lib/slf4j-log4j12-1.6.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/pgaref/workspace/zookeeper-3.4.5/lib/slf4j-log4j12-1.6.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+2013-10-18 19:07:34,539 [myid:] - INFO  [main:QuorumPeerConfig@101] - Reading configuration from: ./conf/zoo.cfg
+2013-10-18 19:07:34,549 [myid:] - INFO  [main:DatadirCleanupManager@78] - autopurge.snapRetainCount set to 3
+2013-10-18 19:07:34,550 [myid:] - INFO  [main:DatadirCleanupManager@79] - autopurge.purgeInterval set to 0
+2013-10-18 19:07:34,550 [myid:] - INFO  [main:DatadirCleanupManager@101] - Purge task is not scheduled.
+2013-10-18 19:07:34,551 [myid:] - WARN  [main:QuorumPeerMain@114] - Either no config or no quorum defined in config, running  in standalone mode
+2013-10-18 19:07:34,568 [myid:] - INFO  [main:QuorumPeerConfig@101] - Reading configuration from: ./conf/zoo.cfg
+2013-10-18 19:07:34,569 [myid:] - INFO  [main:ZooKeeperServerMain@95] - Starting server
+2013-10-18 19:07:34,578 [myid:] - INFO  [main:Environment@100] - Server environment:zookeeper.version=3.4.5--1, built on 10/01/2013 18:05 GMT
+2013-10-18 19:07:34,579 [myid:] - INFO  [main:Environment@100] - Server environment:host.name=pgaref-OptiPlex-755
+2013-10-18 19:07:34,579 [myid:] - INFO  [main:Environment@100] - Server environment:java.version=1.7.0_25
+2013-10-18 19:07:34,580 [myid:] - INFO  [main:Environment@100] - Server environment:java.vendor=Oracle Corporation
+2013-10-18 19:07:34,580 [myid:] - INFO  [main:Environment@100] - Server environment:java.home=/usr/lib/jvm/java-7-openjdk-amd64/jre
+2013-10-18 19:07:34,581 [myid:] - INFO  [main:Environment@100] - Server environment:java.class.path=/home/pgaref/workspace/zookeeper-3.4.5/bin/../build/classes:/home/pgaref/workspace/zookeeper-3.4.5/bin/../build/lib/slf4j-log4j12-1.6.1.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../build/lib/slf4j-api-1.6.1.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../build/lib/netty-3.2.2.Final.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../build/lib/log4j-1.2.15.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../build/lib/jline-0.9.94.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../lib/slf4j-log4j12-1.6.1.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../lib/slf4j-api-1.6.1.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../lib/netty-3.2.2.Final.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../lib/log4j-1.2.15.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../lib/jline-0.9.94.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../zookeeper-3.4.5.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../src/java/lib/ivy-2.2.0.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../src/java/lib/ant-eclipse-1.0-jvm1.2.jar:/home/pgaref/workspace/zookeeper-3.4.5/bin/../conf:
+2013-10-18 19:07:34,582 [myid:] - INFO  [main:Environment@100] - Server environment:java.library.path=/usr/java/packages/lib/amd64:/usr/lib/jni:/lib:/usr/lib
+2013-10-18 19:07:34,582 [myid:] - INFO  [main:Environment@100] - Server environment:java.io.tmpdir=/tmp
+2013-10-18 19:07:34,583 [myid:] - INFO  [main:Environment@100] - Server environment:java.compiler=<NA>
+2013-10-18 19:07:34,583 [myid:] - INFO  [main:Environment@100] - Server environment:os.name=Linux
+2013-10-18 19:07:34,584 [myid:] - INFO  [main:Environment@100] - Server environment:os.arch=amd64
+2013-10-18 19:07:34,585 [myid:] - INFO  [main:Environment@100] - Server environment:os.version=3.2.0-54-generic
+2013-10-18 19:07:34,585 [myid:] - INFO  [main:Environment@100] - Server environment:user.name=root
+2013-10-18 19:07:34,586 [myid:] - INFO  [main:Environment@100] - Server environment:user.home=/root
+2013-10-18 19:07:34,586 [myid:] - INFO  [main:Environment@100] - Server environment:user.dir=/home/pgaref/workspace/zookeeper-3.4.5
+2013-10-18 19:07:34,595 [myid:] - INFO  [main:ZooKeeperServer@726] - tickTime set to 2000
+2013-10-18 19:07:34,596 [myid:] - INFO  [main:ZooKeeperServer@735] - minSessionTimeout set to -1
+2013-10-18 19:07:34,596 [myid:] - INFO  [main:ZooKeeperServer@744] - maxSessionTimeout set to -1
+2013-10-18 19:07:34,652 [myid:] - INFO  [main:NIOServerCnxnFactory@94] - binding to port 0.0.0.0/0.0.0.0:2181
+2013-10-18 19:07:34,669 [myid:] - INFO  [main:FileTxnSnapLog@240] - Snapshotting: 0x0 to /var/zootmp/version-2/snapshot.0
