@@ -25,14 +25,17 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
-
+import edu.brown.cs.zkbenchmark.ZooKeeperBenchmark;
 import javax.management.JMException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.jute.OutputArchive;
 import org.apache.jute.Record;
+import org.apache.log4j.Appender;
+import org.apache.log4j.FileAppender;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooDefs.OpCode;
@@ -53,6 +56,8 @@ import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
 import org.apache.zookeeper.server.util.ZxidUtils;
 import org.apache.zookeeper.txn.CreateTxn;
 import org.apache.zookeeper.txn.TxnHeader;
+
+import edu.brown.cs.zkbenchmark.ZooKeeperBenchmark;
 
 /**
  * 
@@ -91,6 +96,28 @@ public class QuorumPeerMain {
 	public static QuorumPeer quorumPeer;
 	public static ServerCnxnFactory cnxnFactory;
 
+	
+	private static final Thread BenchmarkThread = new Thread(new Runnable()
+    {
+        public void run()
+        {
+        	LOG.info("Benchmark: Initiating in new thread!");
+        	String [] ar = {"--conf", "benchmark.conf"};
+        	PropertiesConfiguration conf = edu.brown.cs.zkbenchmark.ZooKeeperBenchmark.initConfiguration(ar);
+        	try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e1) {
+				LOG.info("BENCHMARK SLEEP FAILED");
+			}
+    		// Run the benchmark
+    		try {
+    			ZooKeeperBenchmark benchmark = new ZooKeeperBenchmark(conf);
+    			benchmark.runBenchmark();
+    		} catch (IOException e) {
+    			LOG.error("Failed to start ZooKeeper benchmark", e);
+    		}
+        }
+    }, "Exit invoker");
 	/**
 	 * To start the replicated server specify the configuration file name on the
 	 * command line.
@@ -130,18 +157,23 @@ public class QuorumPeerMain {
 		 */
 		args = ZooArguments;
 		QuorumPeerConfig config = new QuorumPeerConfig();
-		Thread mymod = new Thread(new Myclass(1));
+		
+		
+		BenchmarkThread.run();
+	//	Thread mymod = new Thread(new Myclass(1));
 
 		if (args.length == 1) {
 			config.parse(args[0]);
 		}
+		
+		
 
 		// Start and schedule the the purge task
 		DatadirCleanupManager purgeMgr = new DatadirCleanupManager(
 				config.getDataDir(), config.getDataLogDir(),
 				config.getSnapRetainCount(), config.getPurgeInterval());
 		purgeMgr.start();
-		mymod.start();
+//		mymod.start();
 		if (args.length == 1 && config.servers.size() > 0) {
 			runFromConfig(config);
 		} else {
@@ -152,7 +184,7 @@ public class QuorumPeerMain {
 			ZooKeeperServerMain.main(args);
 
 		}
-		mymod.start();
+//		mymod.start();
 	}
 
 	public void runFromConfig(QuorumPeerConfig config) throws IOException {
@@ -235,7 +267,7 @@ public class QuorumPeerMain {
 			int i = 0;
 			while (true) {
 
-				if(QuorumPeerMain.quorumPeer.getServerState().equalsIgnoreCase("LEADING")){
+			//	if(QuorumPeerMain.quorumPeer.getServerState().equalsIgnoreCase("LEADING")){
 
 				LOG.info("pgaref - LEADING!!!!");
 				while ((ReqNum) > 0) {
@@ -340,9 +372,9 @@ public class QuorumPeerMain {
 					 " ACL: "+  createRequest.getAcl().toString() + " Flags: "+ createRequest.getFlags()); 
 					*/  
 					  //FOR QUORUM
-					  QuorumPeerMain.quorumPeer.getActiveServer().submitRequest(req);
+					 // QuorumPeerMain.quorumPeer.getActiveServer().submitRequest(req);
 					 
-					  /* FOR STANDALONE SERVER
+					  // FOR STANDALONE SERVER
 					  try {
 						ZooKeeperServer.finalProcessor.processRequest(req);
 						} catch (RequestProcessorException e) {
@@ -350,7 +382,7 @@ public class QuorumPeerMain {
 						}
 						LOG.info("is going to process!!!");
 						
-						*/
+						
 					// QuorumPeerMain.getZkServer(cnxnFactory).zkDb.addCommittedProposal(new
 					// Request(null, 1l, 1, OpCode.create,
 					// ByteBuffer.wrap(baos.toByteArray()), null));
@@ -370,12 +402,12 @@ public class QuorumPeerMain {
 					}
 
 					}
-				 }
+			/*	 }
 
 				 else{
 				 LOG.info("pgaref - FOLLOWING!!!! - "
 				 +QuorumPeerMain.quorumPeer.getServerState() );
-				 }
+				 }*/
 				try {
 					LOG.info("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
 					Thread.sleep(5000);
