@@ -13,13 +13,15 @@ import org.apache.zookeeper.ZooDefs.OpCode;
 import org.apache.zookeeper.server.Request;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.RequestProcessor.RequestProcessorException;
+import org.apache.zookeeper.server.quorum.QuorumPeerMain;
 import org.apache.zookeeper.server.util.ZxidUtils;
 import org.apache.zookeeper.txn.CreateTxn;
 import org.apache.zookeeper.txn.TxnHeader;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.jute.OutputArchive;
 import org.apache.jute.Record;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.brown.cs.zkbenchmark.ZooKeeperBenchmark.TestType;
 
@@ -28,7 +30,7 @@ public class SyncBenchmarkClient extends BenchmarkClient {
 	AtomicInteger _totalOps;
 	private boolean _syncfin;
 
-	private static final Logger LOG = Logger.getLogger(SyncBenchmarkClient.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SyncBenchmarkClient.class);
 
 	
 	public SyncBenchmarkClient(ZooKeeperBenchmark zkBenchmark, String host, String namespace,
@@ -108,6 +110,7 @@ public class SyncBenchmarkClient extends BenchmarkClient {
 	public void CreateInternal(String blockname, byte [] data){
 		//String blockname  = "/foo";
 		//String data = "pgaref";
+		LOG.info("pgaref: Create Internal Called from Sync BENCHMARK");
 		int i = 0;
 		//pgaref -> 23 is the byte len of ZooDefs.Ids.OPEN_ACL_UNSAFE
 		 int DataHeaderLength = 16  + blockname.length() + data.length +23;
@@ -147,7 +150,7 @@ public class SyncBenchmarkClient extends BenchmarkClient {
 			      Requestdata.put(archive.toString().getBytes());
 				  */	
 		      //the flags
-			 Requestdata.putInt(CreateMode.PERSISTENT_SEQUENTIAL.toFlag());
+			 Requestdata.putInt(CreateMode.PERSISTENT.toFlag());
 			 Requestdata.flip();
 		 }catch(IOException ex){
 			 LOG.info("pgaref - Exception Serializing ACL List");	 
@@ -159,7 +162,7 @@ public class SyncBenchmarkClient extends BenchmarkClient {
 		  
 		  long zxid = ZxidUtils.makeZxid(1, i);
 		  TxnHeader hdr = new TxnHeader(1, 10+i, zxid, 30+i,ZooDefs.OpCode.create); 
-		  Record txn = new CreateTxn("/foo" + i, "pgaref".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 1); 
+		  Record txn = new CreateTxn(blockname, data, ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 1); 
 		  Request req = new Request(null, 2285l, 1, OpCode.create, Requestdata,null);  
 		  req.hdr = hdr; 
 		  req.txn = txn;

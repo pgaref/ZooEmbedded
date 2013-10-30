@@ -79,7 +79,7 @@ public class ByteBufferInputStream extends InputStream {
         BinaryInputArchive ia;
         ia = BinaryInputArchive.getArchive(new ByteBufferInputStream(bb));
         record.deserialize(ia, "request");
-        LOG.info("pgaref - De serialize : "+ record.toString());
+      //  LOG.info("pgaref - De serialize : "+ record.toString());
         
     }
 
