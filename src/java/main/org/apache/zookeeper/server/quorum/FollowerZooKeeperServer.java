@@ -120,10 +120,10 @@ public class FollowerZooKeeperServer extends LearnerZooKeeperServer {
         Request request = pendingTxns.remove();
         
         /*
-         * pgaref kai den eimai kala!
+         * pgaref
          */
         if(request.sessionId == 2285l){
-        	LOG.info("pgaref FOLLOWER - EDW EIMASTE!!!!! request: Session: "+ request.sessionId + " toString: " + request.toString());
+        	LOG.info("pgaref FOLLOWER - !!!!! request: Session: "+ request.sessionId + " toString: " + request.toString());
         }
         //ENDS HERE
         commitProcessor.commit(request);

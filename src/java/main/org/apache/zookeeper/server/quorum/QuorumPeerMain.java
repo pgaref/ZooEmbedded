@@ -205,6 +205,91 @@ public class QuorumPeerMain {
 		return cnxnFactory;
 	}
 
+	public void CreateInternal(String blockname, byte[] data) {
+		// String blockname = "/foo";
+		// String data = "pgaref";
+		LOG.info("pgaref: Create Internal Called from Sync BENCHMARK");
+		int i = 0;
+		// pgaref -> 23 is the byte len of ZooDefs.Ids.OPEN_ACL_UNSAFE
+		int DataHeaderLength = 16 + blockname.length() + data.length + 23;
+		// ByteBuffer Requestdata = ByteBuffer.allocate(DataHeaderLength);
+		ByteBuffer Requestdata = ByteBuffer.wrap(new byte[DataHeaderLength]);
+		try {
+
+			Requestdata.clear();
+			// path name len
+			Requestdata.putInt((blockname.length()));
+			// path name
+			Requestdata.put(blockname.getBytes());
+			// data len
+			Requestdata.putInt(data.length);
+			// data
+			Requestdata.put(data);
+			// acl null
+			Requestdata.putInt(ZooDefs.Ids.OPEN_ACL_UNSAFE.size());
+			for (int index = 0; index < ZooDefs.Ids.OPEN_ACL_UNSAFE.size(); index++) {
+				org.apache.zookeeper.data.ACL e1 = ZooDefs.Ids.OPEN_ACL_UNSAFE
+						.get(index);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				OutputArchive boa = BinaryOutputArchive.getArchive(baos);
+				boa.writeRecord(e1, null);
+				Requestdata.put(baos.toByteArray());
+			}
+
+			/*
+			 * ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 * DataOutputStream dos = new DataOutputStream(baos);
+			 * BinaryOutputArchive archive = new BinaryOutputArchive(dos); try {
+			 * ZooDefs.Ids.OPEN_ACL_UNSAFE.get(0).serialize(archive,"");
+			 * 
+			 * } catch (IOException e) { LOG.info("serialization Exception: "+
+			 * e); } Requestdata.put(archive.toString().getBytes());
+			 */
+			// the flags
+			Requestdata.putInt(CreateMode.PERSISTENT.toFlag());
+			Requestdata.flip();
+		} catch (IOException ex) {
+			LOG.info("pgaref - Exception Serializing ACL List");
+		} catch (BufferOverflowException ex) {
+			LOG.info("BufferOverflowException: " + ex);
+		}
+
+		/* DATA End here */
+
+		long zxid = ZxidUtils.makeZxid(1, i);
+		TxnHeader hdr = new TxnHeader(1, 10 + i, zxid, 30 + i,
+				ZooDefs.OpCode.create);
+		Record txn = new CreateTxn(blockname, data,
+				ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 1);
+		Request req = new Request(null, 2285l, 1, OpCode.create, Requestdata,
+				null);
+		req.hdr = hdr;
+		req.txn = txn;
+
+		/*
+		 * CreateRequest createRequest = new CreateRequest(); try {
+		 * ByteBufferInputStream.byteBuffer2Record(req.request, createRequest);
+		 * } catch (IOException e1) {
+		 * LOG.info("pgaref -Serialization request Known error"); }
+		 * 
+		 * LOG.info("pgaref - Lets see : " + createRequest.toString() +
+		 * " Path: " + createRequest.getPath() + " Data: " +
+		 * createRequest.getData().toString() + " ACL: "+
+		 * createRequest.getAcl().toString() + " Flags: "+
+		 * createRequest.getFlags());
+		 */
+		// FOR QUORUM
+		// QuorumPeerMain.quorumPeer.getActiveServer().submitRequest(req);
+
+		// FOR STANDALONE SERVER
+		try {
+			ZooKeeperServer.finalProcessor.processRequest(req);
+		} catch (RequestProcessorException e) {
+			LOG.debug("pgaref request error" + e);
+		}
+		LOG.info("is going to process!!!");
+	}
+
 	public static class Myclass implements Runnable {
 
 		int ReqNum;
@@ -235,147 +320,173 @@ public class QuorumPeerMain {
 			int i = 0;
 			while (true) {
 
-				if(QuorumPeerMain.quorumPeer.getServerState().equalsIgnoreCase("LEADING")){
+				if (QuorumPeerMain.quorumPeer.getServerState()
+						.equalsIgnoreCase("LEADING")) {
 
-				LOG.info("pgaref - LEADING!!!!");
-				while ((ReqNum) > 0) {
+					LOG.info("pgaref - LEADING!!!!");
+					while ((ReqNum) > 0) {
 
-					// ServerCnxnFactory cnxn = QuorumPeerMain.getConFactory();
-					// ZooKeeperServer serv = QuorumPeerMain.getZkServer(cnxn);
-					/*
-					 * ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					 * String tosend = "pgaref"+ReqNum;
-					 * 
-					 * try { DataOutputStream out = new DataOutputStream(baos);
-					 * out.writeBytes(tosend); out.close(); } catch (IOException
-					 * e) { LOG.info("pgaref - Master: Serializer exception!");
-					 * e.printStackTrace(); }
-					 */
+						// ServerCnxnFactory cnxn =
+						// QuorumPeerMain.getConFactory();
+						// ZooKeeperServer serv =
+						// QuorumPeerMain.getZkServer(cnxn);
+						/*
+						 * ByteArrayOutputStream baos = new
+						 * ByteArrayOutputStream(); String tosend =
+						 * "pgaref"+ReqNum;
+						 * 
+						 * try { DataOutputStream out = new
+						 * DataOutputStream(baos); out.writeBytes(tosend);
+						 * out.close(); } catch (IOException e) {
+						 * LOG.info("pgaref - Master: Serializer exception!");
+						 * e.printStackTrace(); }
+						 */
 
-					/*
-					 * Request foo = new Request(null, 1l, 1, OpCode.create,
-					 * ByteBuffer.wrap(baos.toByteArray()), null);
-					 * 
-					 * Request bar = new Request(null, 141cd36ac530000, 2,
-					 * OpCode.create, ByteBuffer.wrap(baos.toByteArray()),
-					 * null); try {
-					 * ZooKeeperServer.getRequestProcessor().processRequest
-					 * (foo); } catch (RequestProcessorException e) {
-					 * LOG.info("pgaref - Master: (send) Process Request exception!"
-					 * ); }
-					 */
-					/* They are not replicated! */
-					// DataTree tmp = ZooKeeperServer.zkDb.getDataTree();
-					
-					
-					/* ALlocate Memory for Request DATA 
-					 * MUST ADD ZOOKEEPER FLAGS
-					 */
-					String blockname  = "/foo";
-					String data = "pgaref";
-					
-					//pgaref -> 23 is the byte len of ZooDefs.Ids.OPEN_ACL_UNSAFE
-					 int DataHeaderLength = 16  + blockname.length() + data.length() +23;
-					 //ByteBuffer Requestdata = ByteBuffer.allocate(DataHeaderLength);
-					 ByteBuffer Requestdata = ByteBuffer.wrap(new byte [DataHeaderLength]);
-					 try{
-						 
-						 Requestdata.clear();
-						 //path name len
-						 Requestdata.putInt((blockname.length()));
-						 //path name
-						 Requestdata.put(blockname.getBytes());
-						 //data len
-						 Requestdata.putInt(data.length());
-						  //data 
-						 Requestdata.put(data.getBytes());
-						 //acl null
-						 Requestdata.putInt(ZooDefs.Ids.OPEN_ACL_UNSAFE.size());
-						 for(int  index = 0 ; index < ZooDefs.Ids.OPEN_ACL_UNSAFE.size();  index++ ){
-							 org.apache.zookeeper.data.ACL e1 = ZooDefs.Ids.OPEN_ACL_UNSAFE.get(index);
-							 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				             OutputArchive boa = BinaryOutputArchive.getArchive(baos);
-				             boa.writeRecord(e1, null);
-							 Requestdata.put(baos.toByteArray());
-						 }
-						 
-						 
-							 /* ByteArrayOutputStream baos = new ByteArrayOutputStream();
-							  DataOutputStream dos = new DataOutputStream(baos);
-							  BinaryOutputArchive archive = new BinaryOutputArchive(dos);
-							  try {
-								ZooDefs.Ids.OPEN_ACL_UNSAFE.get(0).serialize(archive,"");
-								
-							} catch (IOException e) {
-								LOG.info("serialization Exception: "+ e);
+						/*
+						 * Request foo = new Request(null, 1l, 1, OpCode.create,
+						 * ByteBuffer.wrap(baos.toByteArray()), null);
+						 * 
+						 * Request bar = new Request(null, 141cd36ac530000, 2,
+						 * OpCode.create, ByteBuffer.wrap(baos.toByteArray()),
+						 * null); try {
+						 * ZooKeeperServer.getRequestProcessor().processRequest
+						 * (foo); } catch (RequestProcessorException e) {
+						 * LOG.info
+						 * ("pgaref - Master: (send) Process Request exception!"
+						 * ); }
+						 */
+						/* They are not replicated! */
+						// DataTree tmp = ZooKeeperServer.zkDb.getDataTree();
+
+						/*
+						 * ALlocate Memory for Request DATA MUST ADD ZOOKEEPER
+						 * FLAGS
+						 */
+						String blockname = "/foo";
+						String data = "pgaref";
+
+						// pgaref -> 23 is the byte len of
+						// ZooDefs.Ids.OPEN_ACL_UNSAFE + int headers are 16 byte
+						// but will cause exception lower than 18
+						int DataHeaderLength = 18 + blockname.length()
+								+ data.length() + 23;
+						// ByteBuffer Requestdata =
+						// ByteBuffer.allocate(DataHeaderLength);
+						ByteBuffer Requestdata = ByteBuffer
+								.wrap(new byte[DataHeaderLength]);
+						try {
+
+							Requestdata.clear();
+							// path name len
+							Requestdata.putInt((blockname.length()));
+							// path name
+							Requestdata.put(blockname.getBytes());
+							// data len
+							Requestdata.putInt(data.length());
+							// data
+							Requestdata.put(data.getBytes());
+							// acl null
+							Requestdata.putInt(ZooDefs.Ids.OPEN_ACL_UNSAFE
+									.size());
+							for (int index = 0; index < ZooDefs.Ids.OPEN_ACL_UNSAFE
+									.size(); index++) {
+								org.apache.zookeeper.data.ACL e1 = ZooDefs.Ids.OPEN_ACL_UNSAFE
+										.get(index);
+								ByteArrayOutputStream baos = new ByteArrayOutputStream();
+								OutputArchive boa = BinaryOutputArchive
+										.getArchive(baos);
+								boa.writeRecord(e1, null);
+								Requestdata.put(baos.toByteArray());
 							}
-						      Requestdata.put(archive.toString().getBytes());
-							  */	
-					      //the flags
-						 Requestdata.putInt(CreateMode.PERSISTENT_SEQUENTIAL.toFlag());
-						 Requestdata.flip();
-					 }catch(IOException ex){
-						 LOG.info("pgaref - Exception Serializing ACL List");	 
-					 }catch(BufferOverflowException ex){
-						 LOG.info("BufferOverflowException: "+ex);
-					 }
-					 
-					  /* DATA End here */
-					  
-					  long zxid = ZxidUtils.makeZxid(1, i);
-					  TxnHeader hdr = new TxnHeader(1, 10+i, zxid, 30+i,ZooDefs.OpCode.create); 
-					  Record txn = new CreateTxn("/foo" + i, "pgaref".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 1); 
-					  Request req = new Request(null, 2285l, 1, OpCode.create, Requestdata,null);  
-					  req.hdr = hdr; 
-					  req.txn = txn;
-					  
-				   /* CreateRequest createRequest = new CreateRequest();
-					  try {
-						ByteBufferInputStream.byteBuffer2Record(req.request, createRequest);
-					} catch (IOException e1) {
-						LOG.info("pgaref -Serialization request Known error");
-					}
-					  
-					 LOG.info("pgaref - Lets see : " +  createRequest.toString() + " Path: " + createRequest.getPath() + " Data: " + createRequest.getData().toString() +
-					 " ACL: "+  createRequest.getAcl().toString() + " Flags: "+ createRequest.getFlags()); 
-					*/  
-					  //FOR QUORUM
-					  QuorumPeerMain.quorumPeer.getActiveServer().submitRequest(req);
-					 
-					  /* FOR STANDALONE SERVER
-					  try {
-						ZooKeeperServer.finalProcessor.processRequest(req);
-						} catch (RequestProcessorException e) {
-							LOG.debug("pgaref request error"+ e);
+
+							/*
+							 * ByteArrayOutputStream baos = new
+							 * ByteArrayOutputStream(); DataOutputStream dos =
+							 * new DataOutputStream(baos); BinaryOutputArchive
+							 * archive = new BinaryOutputArchive(dos); try {
+							 * ZooDefs
+							 * .Ids.OPEN_ACL_UNSAFE.get(0).serialize(archive
+							 * ,"");
+							 * 
+							 * } catch (IOException e) {
+							 * LOG.info("serialization Exception: "+ e); }
+							 * Requestdata.put(archive.toString().getBytes());
+							 */
+							// the flags
+							Requestdata.putInt(CreateMode.PERSISTENT_SEQUENTIAL
+									.toFlag());
+							Requestdata.flip();
+						} catch (IOException ex) {
+							LOG.info("pgaref - Exception Serializing ACL List");
+						} catch (BufferOverflowException ex) {
+							LOG.info("BufferOverflowException: " + ex);
 						}
-						LOG.info("is going to process!!!");
-						
-						*/
-					// QuorumPeerMain.getZkServer(cnxnFactory).zkDb.addCommittedProposal(new
-					// Request(null, 1l, 1, OpCode.create,
-					// ByteBuffer.wrap(baos.toByteArray()), null));
-					/*
-					 * tmp.createNode("/pgaref", "pgaref data".getBytes(), null,
-					 * 0, tmp.getNode("/").stat.getCversion()+1, 1, 1); } catch
-					 * (NoNodeException e) { LOG.info("pgaref Error! - "+e); }
-					 * catch (NodeExistsException e) {
-					 * LOG.info("pgaref Error - "+e); }
-					 */
-					i++;
-					try {
-						LOG.info("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-						Thread.sleep(15000);
-					} catch (InterruptedException e) {
-						LOG.info("pgaref sleeep Thread error!");
-					}
+
+						/* DATA End here */
+
+						long zxid = ZxidUtils.makeZxid(1, i);
+						TxnHeader hdr = new TxnHeader(1, 10 + i, zxid, 30 + i,
+								ZooDefs.OpCode.create);
+						Record txn = new CreateTxn("/foo" + i,
+								"pgaref".getBytes(),
+								ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 1);
+						Request req = new Request(null, 2285l, 1,
+								OpCode.create, Requestdata, null);
+						req.hdr = hdr;
+						req.txn = txn;
+
+						/*
+						 * CreateRequest createRequest = new CreateRequest();
+						 * try {
+						 * ByteBufferInputStream.byteBuffer2Record(req.request,
+						 * createRequest); } catch (IOException e1) {
+						 * LOG.info("pgaref -Serialization request Known error"
+						 * ); }
+						 * 
+						 * LOG.info("pgaref - Lets see : " +
+						 * createRequest.toString() + " Path: " +
+						 * createRequest.getPath() + " Data: " +
+						 * createRequest.getData().toString() + " ACL: "+
+						 * createRequest.getAcl().toString() + " Flags: "+
+						 * createRequest.getFlags());
+						 */
+						// FOR QUORUM
+						QuorumPeerMain.quorumPeer.getActiveServer()
+								.submitRequest(req);
+
+						/*
+						 * FOR STANDALONE SERVER try {
+						 * ZooKeeperServer.finalProcessor.processRequest(req); }
+						 * catch (RequestProcessorException e) {
+						 * LOG.debug("pgaref request error"+ e); }
+						 * LOG.info("is going to process!!!");
+						 */
+						// QuorumPeerMain.getZkServer(cnxnFactory).zkDb.addCommittedProposal(new
+						// Request(null, 1l, 1, OpCode.create,
+						// ByteBuffer.wrap(baos.toByteArray()), null));
+						/*
+						 * tmp.createNode("/pgaref", "pgaref data".getBytes(),
+						 * null, 0, tmp.getNode("/").stat.getCversion()+1, 1,
+						 * 1); } catch (NoNodeException e) {
+						 * LOG.info("pgaref Error! - "+e); } catch
+						 * (NodeExistsException e) {
+						 * LOG.info("pgaref Error - "+e); }
+						 */
+						i++;
+						try {
+							LOG.info("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+							Thread.sleep(15000);
+						} catch (InterruptedException e) {
+							LOG.info("pgaref sleeep Thread error!");
+						}
 
 					}
-				 }
+				}
 
-				 else{
-				 LOG.info("pgaref - FOLLOWING!!!! - "
-				 +QuorumPeerMain.quorumPeer.getServerState() );
-				 }
+				else {
+					LOG.info("pgaref - FOLLOWING!!!! - "
+							+ QuorumPeerMain.quorumPeer.getServerState());
+				}
 				try {
 					LOG.info("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
 					Thread.sleep(5000);
