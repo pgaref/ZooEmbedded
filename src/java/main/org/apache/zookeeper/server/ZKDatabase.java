@@ -268,7 +268,7 @@ public class ZKDatabase {
             
             /*
              * pgaref - Follower packet? I should use this Method to get commited transactions!
-             */
+             
             if((request.sessionId == 2285l) && QuorumPeerMain.quorumPeer.getServerState().equalsIgnoreCase("FOLLOWING")){
             	//Is my create request here?
             	LOG.info("PGAREF ZKDATABASE Follower : "+
@@ -283,7 +283,7 @@ public class ZKDatabase {
 				}
                 LOG.info("pgaref FINALLY GOT -> "+ new String(((CreateTxn)txn).getData()));
             	
-            }
+            }*/
             //End here!
             
             Proposal p = new Proposal();

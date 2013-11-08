@@ -14,7 +14,7 @@ public interface ZooEmbedded {
 	/* Inserts a internal block with fake session and socket connection to avoid overhead 
 	 * this block by default is persistent sequential with ACL = no security 
 	 */
-	public void insertPersistent(String blockname, byte[] data);
+	//public static void insertPersistent(String blockname, byte[] data);
 	
 	/* Delete a spefic znode */
 	public void delete(String blockname);
