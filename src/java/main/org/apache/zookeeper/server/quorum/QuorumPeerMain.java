@@ -19,8 +19,6 @@ package org.apache.zookeeper.server.quorum;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-
 import javax.management.JMException;
 
 import org.apache.zookeeper.jmx.ManagedUtil;
@@ -252,7 +250,10 @@ public class QuorumPeerMain {
 
 		                LOG.info("Finished election: " + i + ", " + v.getId());
 
-		                Assert.assertTrue("State is not leading.", quorumPeer.getPeerState() == ServerState.LEADING);
+		               if(quorumPeer.getPeerState() == ServerState.LEADING){
+		            	   
+		            	  LOG.info("~~~~~~~Could not change LEADER!!!");
+		               }
 		            } catch (Exception e) {
 		               LOG.info("pgaref ---> Could nor LOOK FOR LEADER!!!!!");
 		            }
