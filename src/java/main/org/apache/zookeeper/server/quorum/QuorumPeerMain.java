@@ -285,14 +285,14 @@ public class QuorumPeerMain {
 						quorumPeer.setCurrentVote(currentVote);
 
 						quorumPeer.startLeaderElection();
-						LOG.info("\n ---Finished election: " + i + ", "
+						LOG.info("\n ------------------------------------------------------------------------Finished election: " + i + ", "
 								+ v.getId());
 
 						if ((quorumPeer.getPeerState() == ServerState.LEADING)  && i == 0) {
 							fail = true;
 							LOG.info("\n I AMM AM STILL LEADER!!!! \n");
-							((FastLeaderElection)quorumPeer.getElectionAlg()).shutdown();
-							quorumPeer.startLeaderElection();
+						//	((FastLeaderElection)quorumPeer.getElectionAlg()).shutdown();
+						//	quorumPeer.startLeaderElection();
 						}
 						else if ((quorumPeer.getPeerState() == ServerState.FOLLOWING)) {
 							LOG.info("\n I AM NOT TURNED TO FOLLOWER! \n");
