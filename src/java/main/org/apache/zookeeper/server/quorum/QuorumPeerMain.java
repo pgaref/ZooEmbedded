@@ -304,7 +304,7 @@ public class QuorumPeerMain {
 		public void run() {
 			LOG.info("pgaref Thread RUN called!");
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(10000);
 			} catch (InterruptedException e1) {
 				LOG.info("Thead SLEEP Exception");
 			}
@@ -331,10 +331,10 @@ public class QuorumPeerMain {
 		                while(true){
 
 		                	quorumPeer.setPeerState(ServerState.LOOKING);
-		                    LOG.info("Going to call leader election.");
+		                    LOG.info("~~~~~~~~~~ Going to call leader election ~~~~~~~~~~~~~");
 		                    v = quorumPeer.getElectionAlg().lookForLeader();
 		                    if(v == null){
-		                        LOG.info("Thread  got a null vote");
+		                        LOG.info("\nThread  got a null vote");
 		                        return;
 		                    }
 
@@ -344,7 +344,7 @@ public class QuorumPeerMain {
 		                     */
 		                    quorumPeer.setCurrentVote(v);
 
-		                    LOG.info("Finished election: " + i + ", " + v.getId());
+		                    LOG.info("\n ---Finished election: " + i + ", " + v.getId());
 
 		                    if((quorumPeer.getPeerState() == ServerState.LEADING))
 		                    	fail = true;
@@ -352,6 +352,7 @@ public class QuorumPeerMain {
 		                    if((quorumPeer.getPeerState() == ServerState.FOLLOWING) ||
 		                            (quorumPeer.getPeerState() == ServerState.LEADING)) 
 		                    	break;
+		                    i++;
 		                }
 		                LOG.info("Master => vote " + v  + " Fail_Var: " +fail );
 		            } catch (InterruptedException e) {
@@ -361,7 +362,7 @@ public class QuorumPeerMain {
 					
 				}
 				else {
-					LOG.info("pgaref - FOLLOWING!!!! - "
+					LOG.info("pgaref - FOLLOWING!!!!"
 							+ QuorumPeerMain.quorumPeer.getServerState());
 				}
 				try {
