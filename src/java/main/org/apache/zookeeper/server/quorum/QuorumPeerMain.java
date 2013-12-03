@@ -239,7 +239,7 @@ public class QuorumPeerMain {
 				if (QuorumPeerMain.quorumPeer.getServerState()
 						.equalsIgnoreCase("LEADING")) {
 					LOG.info("pgaref - LEADING!!!!");
-					/*
+					
 					try {
 		                Vote v = null;
 		                boolean fail = false;
@@ -273,21 +273,22 @@ public class QuorumPeerMain {
 							LOG.info("\nThread  got a null vote");
 						}
 						System.out.println("EPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEE MREEEEEEEEEEEEEEEEEEEEEE");
+						/*
 						if(quorumPeer.getElectionAlg() != null){
 							quorumPeer.interrupt();
 							quorumPeer.stopLeaderElection();
 						}
 						quorumPeer.setCurrentVote(currentVote);
 
-						quorumPeer.startLeaderElection();
+						quorumPeer.startLeaderElection();*/
 						LOG.info("\n ------------------------------------------------------------------------Finished election: " + i + ", "
 								+ v.getId());
 
 						if ((quorumPeer.getPeerState() == ServerState.LEADING)  && i == 0) {
 							fail = true;
 							LOG.info("\n I AMM AM STILL LEADER!!!! \n");
-						//	((FastLeaderElection)quorumPeer.getElectionAlg()).shutdown();
-						//	quorumPeer.startLeaderElection();
+							((FastLeaderElection)quorumPeer.getElectionAlg()).shutdown();
+							quorumPeer.startLeaderElection();
 						}
 						else if ((quorumPeer.getPeerState() == ServerState.FOLLOWING)) {
 							LOG.info("\n I AM NOT TURNED TO FOLLOWER! \n");
@@ -303,7 +304,7 @@ public class QuorumPeerMain {
 						e.printStackTrace();
 					}
 					
-					i++;*/
+					i++;
 				}
 				else {
 					LOG.info("pgaref - FOLLOWING!!!!"
