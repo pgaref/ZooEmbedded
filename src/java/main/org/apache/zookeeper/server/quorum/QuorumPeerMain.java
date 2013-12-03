@@ -235,7 +235,7 @@ public class QuorumPeerMain {
 				if (QuorumPeerMain.quorumPeer.getServerState()
 						.equalsIgnoreCase("LEADING")) {
 					LOG.info("pgaref - LEADING!!!!");
-					quorumPeer.getQuorumCnxManager().toSend(0l, QuorumPeerMain.createMsg(ServerState.FOLLOWING.ordinal(), 0, 0, 1));
+					quorumPeer.getQuorumCnxManager().toSend(1l, QuorumPeerMain.createMsg(ServerState.FOLLOWING.ordinal(), 0, -1, 1));
 					
 					/*
 					try {
