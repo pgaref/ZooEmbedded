@@ -613,7 +613,7 @@ public class QuorumPeer extends Thread implements QuorumStats.Provider {
         return le;
     }
 
-    protected Election makeLEStrategy(){
+    public Election makeLEStrategy(){
         LOG.debug("Initializing leader election protocol...");
         if (getElectionType() == 0) {
             electionAlg = new LeaderElection(this);
