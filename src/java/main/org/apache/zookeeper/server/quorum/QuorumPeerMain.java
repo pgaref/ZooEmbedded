@@ -248,7 +248,7 @@ public class QuorumPeerMain {
 		                quorumPeer.setCurrentVote(currentVote);
 
 		                LOG.info("Finished election: " + i + ", " + v.getId());
-		                quorumPeer.shutdown();
+		                quorumPeer.cnxnFactory.shutdown();
 		                
 		                
 
