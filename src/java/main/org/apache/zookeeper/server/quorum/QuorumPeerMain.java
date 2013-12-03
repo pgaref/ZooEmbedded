@@ -328,56 +328,56 @@ public class QuorumPeerMain {
 					try {
 		                Vote v = null;
 		                boolean fail = false;
-		                while(true){
 
-		                	quorumPeer.setPeerState(ServerState.LOOKING);
-		                    LOG.info("\n~~~~~~~~~~ Going to call leader election ~~~~~~~~~~~~~\n");
-		                    
-		                    //Round Robbin voting!
-							int voteid = 0;
-							if (quorumPeer.getId() == 2)
-								voteid = 3;
-							else if (quorumPeer.getId() == 3)
-								voteid = 1;
-							else
-								voteid = 2;
-		                    
-		                    Vote currentVote = new Vote(voteid, quorumPeer.getLastLoggedZxid(), quorumPeer.getCurrentEpoch());
-		                    
-		                    quorumPeer.setCurrentVote(currentVote);
-		                    v = quorumPeer.getElectionAlg().lookForLeader();
-		                    quorumPeer.getElectionAlg().shutdown();
-	                    	quorumPeer.startLeaderElection();
-		                    LOG.info("\n~~~~~~~~~~ Leader JUST Voted for "+ v);
-		                    
-		                    if(v == null){
-		                        LOG.info("\nThread  got a null vote");
-		                        return;
-		                    }
+						quorumPeer.setPeerState(ServerState.LOOKING);
+						LOG.info("\n~~~~~~~~~~ Going to call leader election ~~~~~~~~~~~~~\n");
 
-		                    /*
-		                     * A real zookeeper would take care of setting the current vote. Here
-		                     * we do it manually.
-		                     */
-		                    quorumPeer.setCurrentVote(currentVote);
+						// Round Robbin voting!
+						int voteid = 0;
+						if (quorumPeer.getId() == 2)
+							voteid = 3;
+						else if (quorumPeer.getId() == 3)
+							voteid = 1;
+						else
+							voteid = 2;
 
-		                    LOG.info("\n ---Finished election: " + i + ", " + v.getId());
+						Vote currentVote = new Vote(voteid,
+								quorumPeer.getLastLoggedZxid(),
+								quorumPeer.getCurrentEpoch());
 
-		                    if((quorumPeer.getPeerState() == ServerState.LEADING)){
-		                    	fail = true;
-		                    	System.out.println("\n I AMM AM STILL LEADER!!!! \n");
-		                    	quorumPeer.getElectionAlg().shutdown();
-		                    	quorumPeer.startLeaderElection();
-		                    }
+						quorumPeer.setCurrentVote(currentVote);
+						v = quorumPeer.getElectionAlg().lookForLeader();
+						quorumPeer.getElectionAlg().shutdown();
+						quorumPeer.startLeaderElection();
+						LOG.info("\n~~~~~~~~~~ Leader JUST Voted for " + v);
 
-		                    if((quorumPeer.getPeerState() == ServerState.FOLLOWING)){ 
-		                    	System.out.println("\n I AM NOT TURNED TO FOLLOWER! \n");
-		                    	
-		                    	break;
-		                    }
-		                    i++;
-		                }
-		                LOG.info("---->>> Master => vote " + v  + " Fail_Var: " +fail );
+						if (v == null) {
+							LOG.info("\nThread  got a null vote");
+							return;
+						}
+
+						/*
+						 * A real zookeeper would take care of setting the
+						 * current vote. Here we do it manually.
+						 */
+						quorumPeer.setCurrentVote(currentVote);
+
+						LOG.info("\n ---Finished election: " + i + ", "
+								+ v.getId());
+
+						if ((quorumPeer.getPeerState() == ServerState.LEADING)) {
+							fail = true;
+							LOG.info("\n I AMM AM STILL LEADER!!!! \n");
+							quorumPeer.getElectionAlg().shutdown();
+							quorumPeer.startLeaderElection();
+						}
+
+						if ((quorumPeer.getPeerState() == ServerState.FOLLOWING)) {
+							LOG.info("\n I AM NOT TURNED TO FOLLOWER! \n");
+						}
+						
+						LOG.info("---->>> Master => voted " + v + " Fail_Var: "
+								+ fail);
 		            } catch (InterruptedException e) {
 		                e.printStackTrace();
 		            } catch (IOException e) {
