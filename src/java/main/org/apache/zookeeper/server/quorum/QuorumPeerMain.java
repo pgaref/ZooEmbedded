@@ -346,7 +346,7 @@ public class QuorumPeerMain {
 		                    
 		                    quorumPeer.setCurrentVote(currentVote);
 		                    v = quorumPeer.getElectionAlg().lookForLeader();
-		                    System.out.println("Leader JUST Voted for "+ v);
+		                    LOG.info("\n~~~~~~~~~~ Leader JUST Voted for "+ v);
 		                    
 		                    if(v == null){
 		                        LOG.info("\nThread  got a null vote");
@@ -357,13 +357,15 @@ public class QuorumPeerMain {
 		                     * A real zookeeper would take care of setting the current vote. Here
 		                     * we do it manually.
 		                     */
-		                    quorumPeer.setCurrentVote(v);
+		                    quorumPeer.setCurrentVote(currentVote);
 
 		                    LOG.info("\n ---Finished election: " + i + ", " + v.getId());
 
 		                    if((quorumPeer.getPeerState() == ServerState.LEADING)){
 		                    	fail = true;
 		                    	System.out.println("\n I AMM AM STILL LEADER!!!! \n");
+		                    	quorumPeer.getElectionAlg().shutdown();
+		                    	quorumPeer.startLeaderElection();
 		                    }
 
 		                    if((quorumPeer.getPeerState() == ServerState.FOLLOWING)){ 
@@ -373,7 +375,7 @@ public class QuorumPeerMain {
 		                    }
 		                    i++;
 		                }
-		                LOG.info("Master => vote " + v  + " Fail_Var: " +fail );
+		                LOG.info("---->>> Master => vote " + v  + " Fail_Var: " +fail );
 		            } catch (InterruptedException e) {
 		                e.printStackTrace();
 		            } catch (IOException e) {
