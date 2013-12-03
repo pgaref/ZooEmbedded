@@ -206,91 +206,6 @@ public class QuorumPeerMain {
 		return cnxnFactory;
 	}
 
-	public void CreateInternal(String blockname, byte[] data) {
-		// String blockname = "/foo";
-		// String data = "pgaref";
-		LOG.info("pgaref: Create Internal Called from Sync BENCHMARK");
-		int i = 0;
-		// pgaref -> 23 is the byte len of ZooDefs.Ids.OPEN_ACL_UNSAFE
-		int DataHeaderLength = 16 + blockname.length() + data.length + 23;
-		// ByteBuffer Requestdata = ByteBuffer.allocate(DataHeaderLength);
-		ByteBuffer Requestdata = ByteBuffer.wrap(new byte[DataHeaderLength]);
-		try {
-
-			Requestdata.clear();
-			// path name len
-			Requestdata.putInt((blockname.length()));
-			// path name
-			Requestdata.put(blockname.getBytes());
-			// data len
-			Requestdata.putInt(data.length);
-			// data
-			Requestdata.put(data);
-			// acl null
-			Requestdata.putInt(ZooDefs.Ids.OPEN_ACL_UNSAFE.size());
-			for (int index = 0; index < ZooDefs.Ids.OPEN_ACL_UNSAFE.size(); index++) {
-				org.apache.zookeeper.data.ACL e1 = ZooDefs.Ids.OPEN_ACL_UNSAFE
-						.get(index);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				OutputArchive boa = BinaryOutputArchive.getArchive(baos);
-				boa.writeRecord(e1, null);
-				Requestdata.put(baos.toByteArray());
-			}
-
-			/*
-			 * ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 * DataOutputStream dos = new DataOutputStream(baos);
-			 * BinaryOutputArchive archive = new BinaryOutputArchive(dos); try {
-			 * ZooDefs.Ids.OPEN_ACL_UNSAFE.get(0).serialize(archive,"");
-			 * 
-			 * } catch (IOException e) { LOG.info("serialization Exception: "+
-			 * e); } Requestdata.put(archive.toString().getBytes());
-			 */
-			// the flags
-			Requestdata.putInt(CreateMode.PERSISTENT.toFlag());
-			Requestdata.flip();
-		} catch (IOException ex) {
-			LOG.info("pgaref - Exception Serializing ACL List");
-		} catch (BufferOverflowException ex) {
-			LOG.info("BufferOverflowException: " + ex);
-		}
-
-		/* DATA End here */
-
-		long zxid = ZxidUtils.makeZxid(1, i);
-		TxnHeader hdr = new TxnHeader(1, 10 + i, zxid, 30 + i,
-				ZooDefs.OpCode.create);
-		Record txn = new CreateTxn(blockname, data,
-				ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 1);
-		Request req = new Request(null, 2285l, 1, OpCode.create, Requestdata,
-				null);
-		req.hdr = hdr;
-		req.txn = txn;
-
-		/*
-		 * CreateRequest createRequest = new CreateRequest(); try {
-		 * ByteBufferInputStream.byteBuffer2Record(req.request, createRequest);
-		 * } catch (IOException e1) {
-		 * LOG.info("pgaref -Serialization request Known error"); }
-		 * 
-		 * LOG.info("pgaref - Lets see : " + createRequest.toString() +
-		 * " Path: " + createRequest.getPath() + " Data: " +
-		 * createRequest.getData().toString() + " ACL: "+
-		 * createRequest.getAcl().toString() + " Flags: "+
-		 * createRequest.getFlags());
-		 */
-		// FOR QUORUM
-		// QuorumPeerMain.quorumPeer.getActiveServer().submitRequest(req);
-
-		// FOR STANDALONE SERVER
-		try {
-			ZooKeeperServer.finalProcessor.processRequest(req);
-		} catch (RequestProcessorException e) {
-			LOG.debug("pgaref request error" + e);
-		}
-		LOG.info("is going to process!!!");
-	}
-
 	public static class Myclass implements Runnable {
 
 		int ReqNum;
@@ -345,11 +260,11 @@ public class QuorumPeerMain {
 								quorumPeer.getLastLoggedZxid(),
 								quorumPeer.getCurrentEpoch()-10);
 
-						quorumPeer.setCurrentVote(currentVote);
-						//v = quorumPeer.getElectionAlg().lookForLeader();
-						quorumPeer.getElectionAlg().shutdown();
-						quorumPeer.startLeaderElection();
-						LOG.info("\n~~~~~~~~~~ Leader JUST Voted for " + v);
+						
+						v = quorumPeer.getElectionAlg().lookForLeader();
+						
+						
+						LOG.info("\n~~~~~~~~~~ Leader JUST Voted for " + v + " I will change it to :"+ currentVote);
 
 						if (v == null) {
 							LOG.info("\nThread  got a null vote");
@@ -365,25 +280,25 @@ public class QuorumPeerMain {
 						LOG.info("\n ---Finished election: " + i + ", "
 								+ v.getId());
 
-						if ((quorumPeer.getPeerState() == ServerState.LEADING)) {
+						if ((quorumPeer.getPeerState() == ServerState.LEADING)  && i == 0) {
 							fail = true;
 							LOG.info("\n I AMM AM STILL LEADER!!!! \n");
-							quorumPeer.getElectionAlg().shutdown();
+							((FastLeaderElection)quorumPeer.getElectionAlg()).shutdown();
 							quorumPeer.startLeaderElection();
 						}
-
-						if ((quorumPeer.getPeerState() == ServerState.FOLLOWING)) {
+						else if ((quorumPeer.getPeerState() == ServerState.FOLLOWING)) {
 							LOG.info("\n I AM NOT TURNED TO FOLLOWER! \n");
 						}
 						
-						LOG.info("---->>> Master => voted " + v + " Fail_Var: "
+						LOG.info("---->>> Master => voted " + v + " My Vote "+ currentVote+" Fail_Var: "
 								+ fail);
-		           
+		            } catch (InterruptedException e) {
+		                e.printStackTrace();
 		            } catch (IOException e) {
 						LOG.info("get Current Epoch error!"+e);
 					}
 					
-					
+					i++;
 				}
 				else {
 					LOG.info("pgaref - FOLLOWING!!!!"
