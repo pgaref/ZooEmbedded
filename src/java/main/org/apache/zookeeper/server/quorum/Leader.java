@@ -988,7 +988,11 @@ class Myclass implements Runnable {
     	if (QuorumPeerMain.quorumPeer.getServerState().equalsIgnoreCase("LEADING"))
     	{
     		System.out.println("\n\n\nTRIGGER ELECTIONS\n\n\n");
-    		QuorumPeerMain.quorumPeer.getCnxnFactory().shutdown();
+    		try {
+				QuorumPeerMain.quorumPeer.leader.ss.close();
+			} catch (IOException e) {
+				System.out.println("pgaref Could not close socket");
+			}
     		leader.shutdown("Compaction");
 			QuorumPeerMain.quorumPeer.startLeaderElection();
 		}
