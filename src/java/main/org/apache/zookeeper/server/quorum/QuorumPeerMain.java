@@ -263,6 +263,7 @@ public class QuorumPeerMain {
 						
 						v = quorumPeer.getElectionAlg().lookForLeader();
 						
+						quorumPeer.shutdown();
 						
 						LOG.info("\n~~~~~~~~~~ Leader JUST Voted for " + v + " I will change it to :"+ currentVote);
 
