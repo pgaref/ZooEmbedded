@@ -990,29 +990,13 @@ class Myclass implements Runnable {
     		
     		leader.shutdown("Compaction");
     		Thread.sleep(1000);
-    		// Round Robbin voting!
-			int voteid = 0;
-			if (QuorumPeerMain.quorumPeer.getId() == 2)
-				voteid = 3;
-			else if (QuorumPeerMain.quorumPeer.getId() == 3)
-				voteid = 1;
-			else
-				voteid = 2;
-
-			Vote currentVote = new Vote(voteid,
-					QuorumPeerMain.quorumPeer.getLastLoggedZxid(),
-					QuorumPeerMain.quorumPeer.getCurrentEpoch());
-
-			QuorumPeerMain.quorumPeer.setCurrentVote(currentVote);
-			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~ Current VOTE" + QuorumPeerMain.quorumPeer.getCurrentVote());
 			
-    		QuorumPeerMain.quorumPeer.getElectionAlg().lookForLeader();
+    		Vote tmp = QuorumPeerMain.quorumPeer.getElectionAlg().AcazooRRlookForLeader();
+    		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~ Leader Voted for " + tmp);
 			//QuorumPeerMain.quorumPeer.startLeaderElection();
 		}
        } catch (InterruptedException e1) {
-       } catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+    	   System.out.println("oe oe");
+       }
 	}
 }

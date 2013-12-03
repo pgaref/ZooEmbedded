@@ -908,4 +908,10 @@ public class FastLeaderElection implements Election {
             self.jmxLeaderElectionBean = null;
         }
     }
+
+	@Override
+	public Vote AcazooRRlookForLeader() throws InterruptedException {
+		LOG.error("pgaref----------------- NOT IMPLEMENTED YET!!! ------------------");
+		return null;
+	}
 }

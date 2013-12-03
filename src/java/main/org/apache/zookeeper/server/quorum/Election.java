@@ -23,5 +23,6 @@ import org.apache.zookeeper.server.quorum.Vote;
 
 public interface Election {
     public Vote lookForLeader() throws InterruptedException;
+    public Vote AcazooRRlookForLeader() throws InterruptedException;
     public void shutdown();
 }

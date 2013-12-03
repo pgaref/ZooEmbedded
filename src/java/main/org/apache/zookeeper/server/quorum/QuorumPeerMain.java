@@ -217,65 +217,6 @@ public class QuorumPeerMain {
 						.equalsIgnoreCase("LEADING")) {
 					LOG.info("pgaref - LEADING!!!!");
 					
-					/*
-					try {
-		                Vote v = null;
-		                boolean fail = false;
-
-						quorumPeer.setPeerState(ServerState.LOOKING);
-						LOG.info("\n~~~~~~~~~~ Going to call leader election ~~~~~~~~~~~~~\n");
-
-						// Round Robbin voting!
-						int voteid = 0;
-						if (quorumPeer.getId() == 2)
-							voteid = 3;
-						else if (quorumPeer.getId() == 3)
-							voteid = 1;
-						else
-							voteid = 2;
-
-						Vote currentVote = new Vote(quorumPeer.getId(),
-								quorumPeer.getLastLoggedZxid()-10,
-								quorumPeer.getCurrentEpoch()-10);
-
-						quorumPeer.setCurrentVote(currentVote);
-						v = quorumPeer.getElectionAlg().lookForLeader();
-						System.out.println("ENDED LOOKING FOR LEADEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRR");
-						
-						
-					//	quorumPeer.shutdown();
-						
-						LOG.info("\n~~~~~~~~~~ Leader JUST Voted for " + v + " I will change it to :"+ currentVote);
-
-						if (v == null) {
-							LOG.info("\nThread  got a null vote");
-						}
-						System.out.println("EPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEE MREEEEEEEEEEEEEEEEEEEEEE");
-						
-						LOG.info("\n ------------------------------------------------------------------------Finished election: " + i + ", "
-								+ v.getId());
-
-						if ((quorumPeer.getPeerState() == ServerState.LEADING)  && i == 0) {
-							fail = true;
-							LOG.info("\n I AMM AM STILL LEADER!!!! \n");
-							((FastLeaderElection)quorumPeer.getElectionAlg()).shutdown();
-							quorumPeer.startLeaderElection();
-						}
-						else if ((quorumPeer.getPeerState() == ServerState.FOLLOWING)) {
-							LOG.info("\n I AM NOT TURNED TO FOLLOWER! \n");
-						}
-						
-						LOG.info("---->>> Master => voted " + v + " My Vote "+ currentVote+" Fail_Var: "
-								+ fail);
-		            
-		            } catch (IOException e) {
-						LOG.info("get Current Epoch error!"+e);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					i++;*/
 				}
 				else {
 					LOG.info("pgaref - FOLLOWING!!!!"
