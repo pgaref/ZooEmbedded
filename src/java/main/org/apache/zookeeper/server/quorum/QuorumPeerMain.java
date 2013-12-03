@@ -346,6 +346,8 @@ public class QuorumPeerMain {
 		                    
 		                    quorumPeer.setCurrentVote(currentVote);
 		                    v = quorumPeer.getElectionAlg().lookForLeader();
+		                    quorumPeer.getElectionAlg().shutdown();
+	                    	quorumPeer.startLeaderElection();
 		                    LOG.info("\n~~~~~~~~~~ Leader JUST Voted for "+ v);
 		                    
 		                    if(v == null){
