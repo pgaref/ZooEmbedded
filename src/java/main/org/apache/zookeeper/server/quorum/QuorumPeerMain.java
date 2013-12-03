@@ -331,7 +331,7 @@ public class QuorumPeerMain {
 		                while(true){
 
 		                	quorumPeer.setPeerState(ServerState.LOOKING);
-		                    LOG.info("~~~~~~~~~~ Going to call leader election ~~~~~~~~~~~~~");
+		                    LOG.info("\n~~~~~~~~~~ Going to call leader election ~~~~~~~~~~~~~\n");
 		                    v = quorumPeer.getElectionAlg().lookForLeader();
 		                    if(v == null){
 		                        LOG.info("\nThread  got a null vote");
@@ -346,12 +346,16 @@ public class QuorumPeerMain {
 
 		                    LOG.info("\n ---Finished election: " + i + ", " + v.getId());
 
-		                    if((quorumPeer.getPeerState() == ServerState.LEADING))
+		                    if((quorumPeer.getPeerState() == ServerState.LEADING)){
 		                    	fail = true;
+		                    	System.out.println("\n I AM STILL LEADER!!!! \n");
+		                    }
 
-		                    if((quorumPeer.getPeerState() == ServerState.FOLLOWING) ||
-		                            (quorumPeer.getPeerState() == ServerState.LEADING)) 
+		                    if((quorumPeer.getPeerState() == ServerState.FOLLOWING)){ 
+		                    	System.out.println("\n I AM NOT TURNED TO FOLLOWER! \n");
+		                    	
 		                    	break;
+		                    }
 		                    i++;
 		                }
 		                LOG.info("Master => vote " + v  + " Fail_Var: " +fail );
