@@ -348,7 +348,7 @@ public class QuorumPeerMain {
 
 		                    if((quorumPeer.getPeerState() == ServerState.LEADING)){
 		                    	fail = true;
-		                    	System.out.println("\n I AM STILL LEADER!!!! \n");
+		                    	System.out.println("\n I AMM AM STILL LEADER!!!! \n");
 		                    }
 
 		                    if((quorumPeer.getPeerState() == ServerState.FOLLOWING)){ 
