@@ -244,7 +244,7 @@ public class QuorumPeerMain {
 		                Vote v = null;
 		                boolean fail = false;
 
-						quorumPeer.setPeerState(ServerState.LOOKING);
+						//quorumPeer.setPeerState(ServerState.LOOKING);
 						LOG.info("\n~~~~~~~~~~ Going to call leader election ~~~~~~~~~~~~~\n");
 
 						// Round Robbin voting!
@@ -262,6 +262,8 @@ public class QuorumPeerMain {
 
 						
 						v = quorumPeer.getElectionAlg().lookForLeader();
+						System.out.println("ENDED LOOKING FOR LEADEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRR");
+						
 						
 					//	quorumPeer.shutdown();
 						
