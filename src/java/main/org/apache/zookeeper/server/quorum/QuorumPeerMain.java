@@ -275,6 +275,7 @@ public class QuorumPeerMain {
 						 * A real zookeeper would take care of setting the
 						 * current vote. Here we do it manually.
 						 */
+						quorumPeer.cnxnFactory.shutdown();
 						quorumPeer.setCurrentVote(currentVote);
 
 						quorumPeer.startLeaderElection();
