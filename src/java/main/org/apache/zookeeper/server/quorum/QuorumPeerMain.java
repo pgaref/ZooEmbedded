@@ -278,7 +278,8 @@ public class QuorumPeerMain {
 						 * current vote. Here we do it manually.
 						 */
 						System.out.println("EPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEE MREEEEEEEEEEEEEEEEEEEEEE");
-						//quorumPeer.stopLeaderElection();
+						if(quorumPeer.getElectionAlg() != null)
+							quorumPeer.stopLeaderElection();
 						quorumPeer.setCurrentVote(currentVote);
 
 						quorumPeer.startLeaderElection();
