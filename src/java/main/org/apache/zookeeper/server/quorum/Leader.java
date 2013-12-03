@@ -988,6 +988,7 @@ class Myclass implements Runnable {
     	if (QuorumPeerMain.quorumPeer.getServerState().equalsIgnoreCase("LEADING"))
     	{
     		System.out.println("\n\n\nTRIGGER ELECTIONS\n\n\n");
+    		QuorumPeerMain.quorumPeer.getCnxnFactory().shutdown();
     		leader.shutdown("Compaction");
 			QuorumPeerMain.quorumPeer.startLeaderElection();
 		}
