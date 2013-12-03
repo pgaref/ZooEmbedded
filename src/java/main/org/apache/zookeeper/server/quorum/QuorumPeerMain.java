@@ -332,7 +332,22 @@ public class QuorumPeerMain {
 
 		                	quorumPeer.setPeerState(ServerState.LOOKING);
 		                    LOG.info("\n~~~~~~~~~~ Going to call leader election ~~~~~~~~~~~~~\n");
+		                    
+		                    //Round Robbin voting!
+							int voteid = 0;
+							if (quorumPeer.getId() == 2)
+								voteid = 3;
+							else if (quorumPeer.getId() == 3)
+								voteid = 1;
+							else
+								voteid = 2;
+		                    
+		                    Vote currentVote = new Vote(voteid, quorumPeer.getLastLoggedZxid(), quorumPeer.getCurrentEpoch());
+		                    
+		                    quorumPeer.setCurrentVote(currentVote);
 		                    v = quorumPeer.getElectionAlg().lookForLeader();
+		                    System.out.println("Leader JUST Voted for "+ v);
+		                    
 		                    if(v == null){
 		                        LOG.info("\nThread  got a null vote");
 		                        return;
@@ -361,7 +376,9 @@ public class QuorumPeerMain {
 		                LOG.info("Master => vote " + v  + " Fail_Var: " +fail );
 		            } catch (InterruptedException e) {
 		                e.printStackTrace();
-		            }
+		            } catch (IOException e) {
+						LOG.info("get Current Epoch error!"+e);
+					}
 					
 					
 				}
