@@ -261,7 +261,7 @@ public class QuorumPeerMain {
 								quorumPeer.getCurrentEpoch());
 
 						
-					//	v = quorumPeer.getElectionAlg().lookForLeader();
+						v = quorumPeer.getElectionAlg().lookForLeader();
 						
 					//	quorumPeer.shutdown();
 						
@@ -298,6 +298,9 @@ public class QuorumPeerMain {
 		            
 		            } catch (IOException e) {
 						LOG.info("get Current Epoch error!"+e);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 					
 					i++;
