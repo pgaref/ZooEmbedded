@@ -217,48 +217,6 @@ public class QuorumPeerMain {
 						.equalsIgnoreCase("LEADING")) {
 					LOG.info("pgaref - LEADING!!!!");
 					
-					
-					try{
-		                Vote v = null;
-		                quorumPeer.setPeerState(ServerState.LOOKING);
-		                LOG.info("Going to call leader election: " + i);
-		                v = quorumPeer.getElectionAlg().lookForLeader();
-
-		                if (v == null){
-		                    LOG.info("Thread " + i + " got a null vote");
-		                }
-
-		                /*
-		                 * A real zookeeper would take care of setting the current vote. Here
-		                 * we do it manually.
-		                 */
-		                // Round Robbin voting!
-						int voteid = 0;
-						if (quorumPeer.getId() == 2)
-							voteid = 3;
-						else if (quorumPeer.getId() == 3)
-							voteid = 1;
-						else
-							voteid = 2;
-
-						Vote currentVote = new Vote(voteid,
-								quorumPeer.getLastLoggedZxid(),
-								quorumPeer.getCurrentEpoch());
-						
-		                quorumPeer.setCurrentVote(currentVote);
-
-		                LOG.info("Finished election: " + i + ", " + v.getId());
-		                quorumPeer.cnxnFactory.shutdown();
-		                
-		                
-
-		               if(quorumPeer.getPeerState() == ServerState.LEADING){
-		            	   
-		            	  LOG.info("~~~~~~~Could not change LEADER!!!");
-		               }
-		            } catch (Exception e) {
-		               LOG.info("pgaref ---> Could nor LOOK FOR LEADER!!!!!");
-		            }
 					/*
 					try {
 		                Vote v = null;

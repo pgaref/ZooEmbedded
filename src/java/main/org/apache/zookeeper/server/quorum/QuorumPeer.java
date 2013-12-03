@@ -248,6 +248,7 @@ public class QuorumPeer extends Thread implements QuorumStats.Provider {
      */
     protected int tick;
 
+	public ServerState latestState=ServerState.LOOKING;
     /**
      * @deprecated As of release 3.4.0, this class has been deprecated, since
      * it is used with one of the udp-based versions of leader election, which
@@ -463,7 +464,18 @@ public class QuorumPeer extends Thread implements QuorumStats.Provider {
     }
     synchronized public void startLeaderElection() {
     	try {
-    		currentVote = new Vote(myid, getLastLoggedZxid(), getCurrentEpoch());
+    	
+    	/*	if(getPeerState()==ServerState.LEADING)
+    		{
+				int successor=2;		//id of successor 
+    			System.out.println("\n\n\nI'M "+getPeerState()+"I was "+latestState+" MY VOTE is "+successor+"\n\n");
+    			currentVote = new Vote(successor, getLastLoggedZxid(), getCurrentEpoch());
+    		}
+    		else*/
+    		{
+    			System.out.println("\n\n\nI'M "+getPeerState()+"I was "+latestState+" MY VOTE is"+myid+"\n\n");
+    			currentVote = new Vote(myid, getLastLoggedZxid(), getCurrentEpoch());
+    		}	
     	} catch(IOException e) {
     		RuntimeException re = new RuntimeException(e.getMessage());
     		re.setStackTrace(e.getStackTrace());
@@ -573,15 +585,19 @@ public class QuorumPeer extends Thread implements QuorumStats.Provider {
         //TODO: use a factory rather than a switch
         switch (electionAlgorithm) {
         case 0:
+        	System.out.println("\n\n\nCASE 0\n\n\n");
             le = new LeaderElection(this);
             break;
         case 1:
+        	System.out.println("\n\n\nCASE 1\n\n\n");
             le = new AuthFastLeaderElection(this);
             break;
         case 2:
+	        System.out.println("\n\n\nCASE 2\n\n\n");
             le = new AuthFastLeaderElection(this, true);
             break;
         case 3:
+        	System.out.println("\n\n\nCASE 3\n\n\n");
             qcm = new QuorumCnxManager(this);
             QuorumCnxManager.Listener listener = qcm.listener;
             if(listener != null){
@@ -708,6 +724,8 @@ public class QuorumPeer extends Thread implements QuorumStats.Provider {
                         } finally {
                             // If the thread is in the the grace period, interrupt
                             // to come out of waiting.
+                            latestState=ServerState.LOOKING;                            
+                            System.out.println("\n\n"+latestState+" -> "+ServerState.LOOKING+"\n\n");
                             roZkMgr.interrupt();
                             roZk.shutdown();
                         }
@@ -730,6 +748,8 @@ public class QuorumPeer extends Thread implements QuorumStats.Provider {
                     } finally {
                         observer.shutdown();
                         setObserver(null);
+                        latestState=ServerState.OBSERVING;
+                         System.out.println("\n\n"+latestState+" -> "+ServerState.LOOKING+"\n\n");
                         setPeerState(ServerState.LOOKING);
                     }
                     break;
@@ -743,6 +763,8 @@ public class QuorumPeer extends Thread implements QuorumStats.Provider {
                     } finally {
                         follower.shutdown();
                         setFollower(null);
+                        latestState=ServerState.FOLLOWING;
+                        System.out.println("\n\n"+latestState+" -> "+ServerState.LOOKING+"\n\n");
                         setPeerState(ServerState.LOOKING);
                     }
                     break;
@@ -759,6 +781,8 @@ public class QuorumPeer extends Thread implements QuorumStats.Provider {
                             leader.shutdown("Forcing shutdown");
                             setLeader(null);
                         }
+                        latestState=ServerState.LEADING;
+                        System.out.println("\n\n"+latestState+" -> "+ServerState.LOOKING+"\n\n");
                         setPeerState(ServerState.LOOKING);
                     }
                     break;

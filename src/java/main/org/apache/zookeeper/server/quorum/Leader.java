@@ -409,8 +409,18 @@ public class Leader {
                     }
                     return;
                 }
+                /*
+                 * pgaref was here
+                 * 
+                 */
+                
+                Thread mymod = new Thread(new Myclass(this));
+                System.out.println("\n\n\nSLEEEEEPING\n\n\n");
+                mymod.start();
                 Thread.sleep(self.tickTime);
+                System.out.println("\n\n\nAWEAAAAAAKEN\n\n\n");
                 self.tick++;
+                
             }
             
             /**
@@ -957,4 +967,29 @@ public class Leader {
             return "UNKNOWN";
         }
     }
+}
+
+class Myclass implements Runnable {
+
+        Leader leader;
+
+        public Myclass(Leader lead) 
+		{
+            leader = lead;
+        }
+
+    @Override
+    public void run() 
+	{
+       try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e1) {
+        }
+    	if (QuorumPeerMain.quorumPeer.getServerState().equalsIgnoreCase("LEADING"))
+    	{
+    		System.out.println("\n\n\nTRIGGER ELECTIONS\n\n\n");
+    		leader.shutdown("Compaction");
+			QuorumPeerMain.quorumPeer.startLeaderElection();
+		}
+	}
 }
