@@ -1004,6 +1004,7 @@ class Myclass implements Runnable {
 					QuorumPeerMain.quorumPeer.getCurrentEpoch());
 
 			QuorumPeerMain.quorumPeer.setCurrentVote(currentVote);
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~ Current VOTE" + QuorumPeerMain.quorumPeer.getCurrentVote());
 			
     		QuorumPeerMain.quorumPeer.getElectionAlg().lookForLeader();
 			//QuorumPeerMain.quorumPeer.startLeaderElection();
