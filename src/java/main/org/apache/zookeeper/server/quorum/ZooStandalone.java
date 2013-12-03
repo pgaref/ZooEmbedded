@@ -152,7 +152,7 @@ public class ZooStandalone implements ZooEmbedded, Runnable {
 	public String getServerState() {
 		return "StandAlone";
 	}
-	
+	/*
 	public static void main(String[] args) {
 		LOG.info("Standalone Test Started");
 		Thread test = new Thread(new ZooStandalone());
@@ -164,7 +164,7 @@ public class ZooStandalone implements ZooEmbedded, Runnable {
 			e.printStackTrace();
 		}
 		insertPersistent("/test", "data".getBytes());
-	}
+	}*/
 
 	
 
