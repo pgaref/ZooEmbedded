@@ -990,11 +990,28 @@ class Myclass implements Runnable {
     		
     		leader.shutdown("Compaction");
     		Thread.sleep(1000);
+    		// Round Robbin voting!
+			int voteid = 0;
+			if (QuorumPeerMain.quorumPeer.getId() == 2)
+				voteid = 3;
+			else if (QuorumPeerMain.quorumPeer.getId() == 3)
+				voteid = 1;
+			else
+				voteid = 2;
+
+			Vote currentVote = new Vote(voteid,
+					QuorumPeerMain.quorumPeer.getLastLoggedZxid(),
+					QuorumPeerMain.quorumPeer.getCurrentEpoch());
+
+			QuorumPeerMain.quorumPeer.setCurrentVote(currentVote);
 			
     		QuorumPeerMain.quorumPeer.getElectionAlg().lookForLeader();
 			//QuorumPeerMain.quorumPeer.startLeaderElection();
 		}
        } catch (InterruptedException e1) {
-       }
+       } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	}
 }
