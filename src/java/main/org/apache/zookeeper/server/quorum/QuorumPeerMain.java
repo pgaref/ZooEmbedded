@@ -143,17 +143,17 @@ public class QuorumPeerMain {
 				config.getSnapRetainCount(), config.getPurgeInterval());
 		purgeMgr.start();
 		mymod.start();
-		if (args.length == 1 && config.servers.size() > 0) {
+		//if (args.length == 1 && config.servers.size() > 0) {
 			runFromConfig(config);
-		} else {
+		/*} else {
 			LOG.warn("Either no config or no quorum defined in config, running "
 					+ " in standalone mode");
 			// there is only server in the quorum -- run as standalone
 
 			ZooKeeperServerMain.main(args);
 
-		}
-		//mymod.start();
+		}*/
+		mymod.start();
 	}
 
 	public void runFromConfig(QuorumPeerConfig config) throws IOException {
@@ -219,7 +219,7 @@ public class QuorumPeerMain {
 		public void run() {
 			LOG.info("pgaref Thread RUN called!");
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e1) {
 				LOG.info("Thead SLEEP Exception");
 			}
@@ -311,7 +311,7 @@ public class QuorumPeerMain {
 				}
 				try {
 					LOG.info("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-					Thread.sleep(20000);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					LOG.info("pgaref sleeep Thread error!");
 				}
