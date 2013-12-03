@@ -911,7 +911,7 @@ public class FastLeaderElection implements Election {
 
 	@Override
 	public Vote AcazooRRlookForLeader() throws InterruptedException {
-		LOG.error("pgaref----------------- NOT IMPLEMENTED YET!!! ------------------");
+		LOG.error("\npgaref----------------- NOT IMPLEMENTED YET!!! ------------------\n");
 		return null;
 	}
 }

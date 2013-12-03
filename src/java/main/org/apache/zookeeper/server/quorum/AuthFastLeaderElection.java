@@ -976,7 +976,7 @@ public class AuthFastLeaderElection implements Election {
 
 	@Override
 	public Vote AcazooRRlookForLeader() throws InterruptedException {
-		LOG.error("pgaref----------------- NOT IMPLEMENTED YET!!! ------------------");
+		LOG.error("\npgaref-----------------AuthFLE NOT IMPLEMENTED YET!!! ------------------\n");
 		return null;
 	}
 }
