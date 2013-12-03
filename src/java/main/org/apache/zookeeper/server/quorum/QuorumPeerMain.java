@@ -258,18 +258,17 @@ public class QuorumPeerMain {
 
 						Vote currentVote = new Vote(voteid,
 								quorumPeer.getLastLoggedZxid(),
-								quorumPeer.getCurrentEpoch()-10);
+								quorumPeer.getCurrentEpoch());
 
 						
-						v = quorumPeer.getElectionAlg().lookForLeader();
+					//	v = quorumPeer.getElectionAlg().lookForLeader();
 						
-						quorumPeer.shutdown();
+					//	quorumPeer.shutdown();
 						
 						LOG.info("\n~~~~~~~~~~ Leader JUST Voted for " + v + " I will change it to :"+ currentVote);
 
 						if (v == null) {
 							LOG.info("\nThread  got a null vote");
-							return;
 						}
 
 						/*
@@ -278,6 +277,7 @@ public class QuorumPeerMain {
 						 */
 						quorumPeer.setCurrentVote(currentVote);
 
+						quorumPeer.startLeaderElection();
 						LOG.info("\n ---Finished election: " + i + ", "
 								+ v.getId());
 
@@ -293,8 +293,7 @@ public class QuorumPeerMain {
 						
 						LOG.info("---->>> Master => voted " + v + " My Vote "+ currentVote+" Fail_Var: "
 								+ fail);
-		            } catch (InterruptedException e) {
-		                e.printStackTrace();
+		            
 		            } catch (IOException e) {
 						LOG.info("get Current Epoch error!"+e);
 					}
