@@ -346,7 +346,7 @@ public class QuorumPeerMain {
 								quorumPeer.getCurrentEpoch()-10);
 
 						quorumPeer.setCurrentVote(currentVote);
-						v = quorumPeer.getElectionAlg().lookForLeader();
+						//v = quorumPeer.getElectionAlg().lookForLeader();
 						quorumPeer.getElectionAlg().shutdown();
 						quorumPeer.startLeaderElection();
 						LOG.info("\n~~~~~~~~~~ Leader JUST Voted for " + v);
@@ -378,8 +378,7 @@ public class QuorumPeerMain {
 						
 						LOG.info("---->>> Master => voted " + v + " Fail_Var: "
 								+ fail);
-		            } catch (InterruptedException e) {
-		                e.printStackTrace();
+		           
 		            } catch (IOException e) {
 						LOG.info("get Current Epoch error!"+e);
 					}
