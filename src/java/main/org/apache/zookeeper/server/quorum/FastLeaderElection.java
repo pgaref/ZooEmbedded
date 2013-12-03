@@ -921,13 +921,13 @@ public class FastLeaderElection implements Election {
             self.jmxLeaderElectionBean = null;
         }
 		// Round Robbin voting!
-				int voteid = 0;
-				if (QuorumPeerMain.quorumPeer.getId() == 2)
-					voteid = 3;
-				else if (QuorumPeerMain.quorumPeer.getId() == 3)
-					voteid = 1;
+				long voteid = 0l;
+				if (QuorumPeerMain.quorumPeer.getId() == 2l)
+					voteid = 3l;
+				else if (QuorumPeerMain.quorumPeer.getId() == 3l)
+					voteid = 1l;
 				else
-					voteid = 2;
+					voteid = 2l;
 				
         if (self.start_fle == 0) {
            self.start_fle = System.currentTimeMillis();
@@ -1020,10 +1020,10 @@ public class FastLeaderElection implements Election {
                                     ", proposed election epoch=0x" + Long.toHexString(n.electionEpoch));
                         }
 
-                        recvset.put(n.sid, new Vote(n.leader, n.zxid, n.electionEpoch, n.peerEpoch));
+                        recvset.put(n.sid, new Vote(voteid, n.zxid, n.electionEpoch, n.peerEpoch));
 
                         if (termPredicate(recvset,
-                                new Vote(proposedLeader, proposedZxid,
+                                new Vote(voteid, proposedZxid,
                                         logicalclock, proposedEpoch))) {
 
                             // Verify if there is any change in the proposed leader
@@ -1044,7 +1044,7 @@ public class FastLeaderElection implements Election {
                                 self.setPeerState((proposedLeader == self.getId()) ?
                                         ServerState.LEADING: learningState());
 
-                                Vote endVote = new Vote(proposedLeader,
+                                Vote endVote = new Vote(voteid,
                                         proposedZxid, proposedEpoch);
                                 leaveInstance(endVote);
                                 return endVote;
