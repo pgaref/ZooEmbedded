@@ -275,6 +275,7 @@ public class QuorumPeerMain {
 						 * A real zookeeper would take care of setting the
 						 * current vote. Here we do it manually.
 						 */
+						System.out.println("EPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEE MREEEEEEEEEEEEEEEEEEEEEE");
 						quorumPeer.stopLeaderElection();
 						quorumPeer.setCurrentVote(currentVote);
 
