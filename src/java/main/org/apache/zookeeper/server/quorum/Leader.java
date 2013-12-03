@@ -983,18 +983,17 @@ class Myclass implements Runnable {
 	{
        try {
             Thread.sleep(10000);
-        } catch (InterruptedException e1) {
-        }
+        
     	if (QuorumPeerMain.quorumPeer.getServerState().equalsIgnoreCase("LEADING"))
     	{
     		System.out.println("\n\n\nTRIGGER ELECTIONS\n\n\n");
-    		try {
-				QuorumPeerMain.quorumPeer.leader.ss.close();
-			} catch (IOException e) {
-				System.out.println("pgaref Could not close socket");
-			}
+    		
     		leader.shutdown("Compaction");
+    		Thread.sleep(1000);
+			
 			QuorumPeerMain.quorumPeer.startLeaderElection();
 		}
+       } catch (InterruptedException e1) {
+       }
 	}
 }
