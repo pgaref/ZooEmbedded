@@ -992,7 +992,7 @@ class Myclass implements Runnable {
     		Thread.sleep(1000);
 			
     		QuorumPeerMain.quorumPeer.setElectionType(0);
-    		QuorumPeerMain.quorumPeer.makeLEStrategy();
+    		//QuorumPeerMain.quorumPeer.makeLEStrategy();
     		Vote tmp = QuorumPeerMain.quorumPeer.getElectionAlg().AcazooRRlookForLeader();
     		System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~ Leader Voted for " + tmp);
 			//QuorumPeerMain.quorumPeer.startLeaderElection();
