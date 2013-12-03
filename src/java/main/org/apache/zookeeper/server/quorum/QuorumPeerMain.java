@@ -88,7 +88,7 @@ public class QuorumPeerMain {
 			.getLogger(QuorumPeerMain.class);
 
 	private static final String USAGE = "Usage: QuorumPeerMain configfile";
-	private static final String[] ZooArguments = { "./conf/zoo.cfg" };
+	private static final String[] ZooArguments = { "./conf/zooQuorum.cfg" };
 	public static QuorumPeer quorumPeer;
 	public static ServerCnxnFactory cnxnFactory;
 
