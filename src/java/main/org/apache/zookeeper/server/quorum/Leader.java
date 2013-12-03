@@ -988,8 +988,8 @@ class Myclass implements Runnable {
     	{
     		System.out.println("\n\n\nTRIGGER ELECTIONS\n\n\n");
     		
-    		//leader.shutdown("Compaction");
-    		//Thread.sleep(1000);
+    		leader.shutdown("Compaction");
+    		Thread.sleep(1000);
 			
     		//QuorumPeerMain.quorumPeer.setElectionType(0);
     		//QuorumPeerMain.quorumPeer.makeLEStrategy();
