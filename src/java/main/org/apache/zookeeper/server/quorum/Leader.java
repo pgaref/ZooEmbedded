@@ -992,7 +992,7 @@ class Myclass implements Runnable {
     		Thread.sleep(1000);
 			
     		Vote tmp = ((LeaderElection)QuorumPeerMain.quorumPeer.getElectionAlg()).AcazooRRlookForLeader();
-    		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~ Leader Voted for " + tmp);
+    		System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~ Leader Voted for " + tmp);
 			//QuorumPeerMain.quorumPeer.startLeaderElection();
 		}
        } catch (InterruptedException e1) {
