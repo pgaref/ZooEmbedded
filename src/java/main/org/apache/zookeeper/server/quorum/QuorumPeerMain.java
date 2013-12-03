@@ -31,6 +31,7 @@ import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.apache.zookeeper.server.quorum.QuorumPeer.ServerState;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -184,23 +185,6 @@ public class QuorumPeerMain {
 	public static ServerCnxnFactory getConFactory() {
 		return cnxnFactory;
 	}
-	
-	static ByteBuffer createMsg(int state, long leader, long zxid, long epoch){
-        byte requestBytes[] = new byte[28];
-        ByteBuffer requestBuffer = ByteBuffer.wrap(requestBytes);
-
-        /*
-         * Building notification packet to send
-         */
-
-        requestBuffer.clear();
-        requestBuffer.putInt(state);
-        requestBuffer.putLong(leader);
-        requestBuffer.putLong(zxid);
-        requestBuffer.putLong(epoch);
-
-        return requestBuffer;
-    }
 
 	public static class Myclass implements Runnable {
 
@@ -235,8 +219,43 @@ public class QuorumPeerMain {
 				if (QuorumPeerMain.quorumPeer.getServerState()
 						.equalsIgnoreCase("LEADING")) {
 					LOG.info("pgaref - LEADING!!!!");
-					quorumPeer.getQuorumCnxManager().toSend(1l, QuorumPeerMain.createMsg(ServerState.FOLLOWING.ordinal(), 0, -1, 1));
 					
+					
+					try{
+		                Vote v = null;
+		                quorumPeer.setPeerState(ServerState.LOOKING);
+		                LOG.info("Going to call leader election: " + i);
+		                v = quorumPeer.getElectionAlg().lookForLeader();
+
+		                if (v == null){
+		                    Assert.fail("Thread " + i + " got a null vote");
+		                }
+
+		                /*
+		                 * A real zookeeper would take care of setting the current vote. Here
+		                 * we do it manually.
+		                 */
+		                // Round Robbin voting!
+						int voteid = 0;
+						if (quorumPeer.getId() == 2)
+							voteid = 3;
+						else if (quorumPeer.getId() == 3)
+							voteid = 1;
+						else
+							voteid = 2;
+
+						Vote currentVote = new Vote(voteid,
+								quorumPeer.getLastLoggedZxid(),
+								quorumPeer.getCurrentEpoch());
+						
+		                quorumPeer.setCurrentVote(currentVote);
+
+		                LOG.info("Finished election: " + i + ", " + v.getId());
+
+		                Assert.assertTrue("State is not leading.", quorumPeer.getPeerState() == ServerState.LEADING);
+		            } catch (Exception e) {
+		               LOG.info("pgaref ---> Could nor LOOK FOR LEADER!!!!!");
+		            }
 					/*
 					try {
 		                Vote v = null;
