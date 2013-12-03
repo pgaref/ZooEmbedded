@@ -239,7 +239,7 @@ public class QuorumPeerMain {
 				if (QuorumPeerMain.quorumPeer.getServerState()
 						.equalsIgnoreCase("LEADING")) {
 					LOG.info("pgaref - LEADING!!!!");
-					
+					/*
 					try {
 		                Vote v = null;
 		                boolean fail = false;
@@ -272,11 +272,6 @@ public class QuorumPeerMain {
 						if (v == null) {
 							LOG.info("\nThread  got a null vote");
 						}
-
-						/*
-						 * A real zookeeper would take care of setting the
-						 * current vote. Here we do it manually.
-						 */
 						System.out.println("EPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEE MREEEEEEEEEEEEEEEEEEEEEE");
 						if(quorumPeer.getElectionAlg() != null){
 							quorumPeer.interrupt();
@@ -308,7 +303,7 @@ public class QuorumPeerMain {
 						e.printStackTrace();
 					}
 					
-					i++;
+					i++;*/
 				}
 				else {
 					LOG.info("pgaref - FOLLOWING!!!!"
