@@ -52,6 +52,7 @@ import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.apache.zookeeper.server.quorum.QuorumPeer.ServerState;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
 import org.apache.zookeeper.server.util.ZxidUtils;
+import org.apache.zookeeper.test.FLETestUtils;
 import org.apache.zookeeper.txn.CreateTxn;
 import org.apache.zookeeper.txn.TxnHeader;
 
@@ -205,6 +206,23 @@ public class QuorumPeerMain {
 	public static ServerCnxnFactory getConFactory() {
 		return cnxnFactory;
 	}
+	
+	static ByteBuffer createMsg(int state, long leader, long zxid, long epoch){
+        byte requestBytes[] = new byte[28];
+        ByteBuffer requestBuffer = ByteBuffer.wrap(requestBytes);
+
+        /*
+         * Building notification packet to send
+         */
+
+        requestBuffer.clear();
+        requestBuffer.putInt(state);
+        requestBuffer.putLong(leader);
+        requestBuffer.putLong(zxid);
+        requestBuffer.putLong(epoch);
+
+        return requestBuffer;
+    }
 
 	public static class Myclass implements Runnable {
 
@@ -239,7 +257,9 @@ public class QuorumPeerMain {
 				if (QuorumPeerMain.quorumPeer.getServerState()
 						.equalsIgnoreCase("LEADING")) {
 					LOG.info("pgaref - LEADING!!!!");
+					quorumPeer.getQuorumCnxManager().toSend(0l, QuorumPeerMain.createMsg(ServerState.FOLLOWING.ordinal(), 0, 0, 1));
 					
+					/*
 					try {
 		                Vote v = null;
 		                boolean fail = false;
@@ -273,14 +293,7 @@ public class QuorumPeerMain {
 							LOG.info("\nThread  got a null vote");
 						}
 						System.out.println("EPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEE MREEEEEEEEEEEEEEEEEEEEEE");
-						/*
-						if(quorumPeer.getElectionAlg() != null){
-							quorumPeer.interrupt();
-							quorumPeer.stopLeaderElection();
-						}
-						quorumPeer.setCurrentVote(currentVote);
-
-						quorumPeer.startLeaderElection();*/
+						
 						LOG.info("\n ------------------------------------------------------------------------Finished election: " + i + ", "
 								+ v.getId());
 
@@ -304,7 +317,7 @@ public class QuorumPeerMain {
 						e.printStackTrace();
 					}
 					
-					i++;
+					i++;*/
 				}
 				else {
 					LOG.info("pgaref - FOLLOWING!!!!"
