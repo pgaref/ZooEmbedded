@@ -991,7 +991,8 @@ class Myclass implements Runnable {
     		leader.shutdown("Compaction");
     		Thread.sleep(1000);
 			
-			QuorumPeerMain.quorumPeer.startLeaderElection();
+    		QuorumPeerMain.quorumPeer.getElectionAlg().lookForLeader();
+			//QuorumPeerMain.quorumPeer.startLeaderElection();
 		}
        } catch (InterruptedException e1) {
        }
