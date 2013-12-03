@@ -343,7 +343,7 @@ public class QuorumPeerMain {
 
 						Vote currentVote = new Vote(voteid,
 								quorumPeer.getLastLoggedZxid(),
-								quorumPeer.getCurrentEpoch());
+								quorumPeer.getCurrentEpoch()-10);
 
 						quorumPeer.setCurrentVote(currentVote);
 						v = quorumPeer.getElectionAlg().lookForLeader();
