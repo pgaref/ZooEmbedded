@@ -414,7 +414,7 @@ public class Leader {
                  * 
                  */
                 
-                Thread mymod = new Thread(new Myclass(5));
+                Thread mymod = new Thread(new Myclass(10));
                 System.out.println("\n\n\nSLEEEEEPING\n\n\n");
                 mymod.start();
                 Thread.sleep(self.tickTime);
@@ -988,7 +988,7 @@ class Myclass implements Runnable {
     	{
     		System.out.println("\n\n\nTRIGGER ELECTIONS\n\n\n");
     		
-    		QuorumPeerMain.quorumPeer.shutdown();
+    		QuorumPeerMain.quorumPeer.leader.shutdown("~Acazoo Compaction Scheduling~");
     		Thread.sleep(1000);
 			
     		Vote tmp = QuorumPeerMain.quorumPeer.getElectionAlg().AcazooRRlookForLeader();
