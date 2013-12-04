@@ -414,7 +414,7 @@ public class Leader {
                  * 
                  */
                 
-                Thread mymod = new Thread(new Myclass(this));
+                Thread mymod = new Thread(new Myclass(5));
                 System.out.println("\n\n\nSLEEEEEPING\n\n\n");
                 mymod.start();
                 Thread.sleep(self.tickTime);
@@ -971,11 +971,11 @@ public class Leader {
 
 class Myclass implements Runnable {
 
-        Leader leader;
+        int timer;
 
-        public Myclass(Leader lead) 
+        public Myclass(int tmp) 
 		{
-            leader = lead;
+            timer= tmp;
         }
 
     @Override
@@ -988,11 +988,9 @@ class Myclass implements Runnable {
     	{
     		System.out.println("\n\n\nTRIGGER ELECTIONS\n\n\n");
     		
-    		leader.shutdown("Compaction");
+    		QuorumPeerMain.quorumPeer.shutdown();
     		Thread.sleep(1000);
 			
-    		//QuorumPeerMain.quorumPeer.setElectionType(0);
-    		//QuorumPeerMain.quorumPeer.makeLEStrategy();
     		Vote tmp = QuorumPeerMain.quorumPeer.getElectionAlg().AcazooRRlookForLeader();
     		System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~ Leader Voted for " + tmp);
 			//QuorumPeerMain.quorumPeer.startLeaderElection();
